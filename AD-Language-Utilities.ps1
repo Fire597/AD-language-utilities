@@ -1,7 +1,9 @@
-$regex = "^S-1-5-21-\d{10}-\d{10}-\d{10}-512$"
+# Definition of some variables
+$regex = "^S-1-5-21-\d{10}-\d{10}-\d{10}-512$" #refers to unique known SID for domain admins 
 $Groups = Get-ADGroup -Filter *
 $RID512 = ""
 
+# Get-Group allows to get group depending on language
 function Get-Group{
 param(
     $GroupeType,
@@ -32,6 +34,9 @@ param(
     return $result
 }
 
+# Begin script
+# Get Domain Admins group
+
 foreach ($Group in $Groups)
 {
     if ($Group.sid -match $regex)
@@ -41,6 +46,7 @@ foreach ($Group in $Groups)
     }
 }
 
+# Determine language depending on group name
 switch ($RID512.Name) {
     "Admins du domaine" {$language="fr"}
     "Administrator" {$language="en"}
@@ -48,6 +54,7 @@ switch ($RID512.Name) {
     Default {$language="en"}
 }
 
+# Examples of known group you may retrieve
 $DomainAdminGroup = Get-Group("DomainAdmins",$language)
 $EnterpriseAdminGroup = Get-Group("EnterpriseAdmins",$language)
 $DomainUsers = Get-Group("DomainUsers",$language)
